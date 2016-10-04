@@ -33,3 +33,96 @@ Axiom AC: forall X: set, ~Empty_set X /\
                         (forall x y: set, In x X /\ In y X ->
                                   (exists j: set, join x y j /\ Empty_set j))
                     -> (exists S: set, AC_set X S).
+Definition union2 (X Y Z: set) := exists A: set, pai_set X Y A /\ uni_set A Z.
+
+
+Lemma unit_set_exists: forall X: set, exists Y: set, unit_set X Y.
+Proof.
+intro X.
+assert (exists Y: set, pai_set X X Y).
+apply Pai.
+unfold pai_set in H.
+unfold unit_set.
+firstorder.
+Qed.
+
+Lemma union2_exists: forall X Y: set, exists Z: set, union2 X Y Z.
+Proof.
+intros.
+unfold union2.
+assert (exists A: set, pai_set X Y A).
+apply Pai.
+elim H.
+intros.
+assert (exists Z: set, uni_set x Z).
+apply Uni.
+firstorder.
+Qed.
+
+Lemma succ_exists: forall x: set, exists y: set, succ x y.
+Proof.
+intro.
+unfold succ.
+assert (exists a: set, unit_set x a).
+apply unit_set_exists.
+elim H.
+intros.
+assert (exists b: set, union2 x0 x b).
+apply union2_exists.
+unfold unit_set in H.
+unfold union2 in H1.
+unfold pai_set, uni_set in H1.
+elim H1.
+intros.
+elim H2.
+intros.
+destruct H3.
+exists x1.
+assert (forall P Q R: Prop, (P <-> Q) -> (Q <-> R) -> (P <-> R)).
+tauto.
+intro.
+apply H5 with (exists Z: set, In Z x2 /\ In u Z).
+apply H4.
+split.
+intro.
+case H6.
+intros.
+destruct H7.
+assert (forall P Q R: Prop, (P<->Q)->(Q->R)->(P->R)).
+tauto.
+apply H9 with (In x3 x2) (x3=x0\/x3=x).
+apply H3.
+unfold unit_set in H0.
+intro.
+elim H10.
+unfold iff in H0.
+elim H0 with u.
+intros.
+left.
+apply H11.
+rewrite <- H13.
+trivial.
+right.
+rewrite <- H11.
+trivial.
+trivial.
+intro.
+elim H6.
+intro.
+exists x0.
+split.
+unfold iff in H3.
+apply H3.
+tauto.
+unfold unit_set in H0.
+apply H0.
+trivial.
+intro.
+exists x.
+split.
+apply H3.
+tauto.
+trivial.
+Qed.
+
+
